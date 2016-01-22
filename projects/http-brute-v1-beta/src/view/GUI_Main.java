@@ -1,18 +1,10 @@
 package view;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -20,31 +12,35 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.CompoundBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumnModel;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
-import Control.Control;
-import model.Feed;
-import model.FeedMessage;
+import com.oracle.webservices.internal.api.EnvelopeStyle.Style;
+
+import control.Control;
+import javax.swing.JTextPane;
+
+
 
 public class GUI_Main {
 
 	private Control c_main;
-	private JTextArea textAreaDescription;
 	private JTextField txtSearching;
-	private JTextArea textAreaDateUpdate;
 
-	private JFrame frmSecurityFeeds;
-
+	private JFrame frmHttpBypass;
+	private JTextField txtWordlistPath;
+	private JTextField textField;
+	private JTextField txtRequestMethod;
+	private JTextPane txtPaneLog;
 
 	/**
 	 * Create the application.
@@ -60,14 +56,14 @@ public class GUI_Main {
 	private void initialize() {
 		
 
-		frmSecurityFeeds = new JFrame();
-		frmSecurityFeeds.setIconImage(Toolkit.getDefaultToolkit().getImage(Gui_Main.class.getResource("/img/Security_Approved.png")));
-		frmSecurityFeeds.getContentPane().setBackground(Color.WHITE);
-		frmSecurityFeeds.setBounds(100, 100, 911, 687);
-		frmSecurityFeeds.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmHttpBypass = new JFrame();
+		//frmSecurityFeeds.setIconImage(Toolkit.getDefaultToolkit().getImage(GUI_Main.class.getResource("/img/Security_Approved.png")));
+		frmHttpBypass.getContentPane().setBackground(Color.WHITE);
+		frmHttpBypass.setBounds(100, 100, 911, 614);
+		frmHttpBypass.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JMenuBar menuBar = new JMenuBar();
-		frmSecurityFeeds.setJMenuBar(menuBar);
+		frmHttpBypass.setJMenuBar(menuBar);
 		
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
@@ -92,61 +88,121 @@ public class GUI_Main {
 
 		mntmAbout.setBackground(Color.WHITE);
 		mnNewMenu.add(mntmAbout);
-		frmSecurityFeeds.getContentPane().setLayout(null);
+		frmHttpBypass.getContentPane().setLayout(null);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		tabbedPane.setBackground(Color.WHITE);
 		tabbedPane.setBounds(0, 0, 905, 638);
-		frmSecurityFeeds.getContentPane().add(tabbedPane);
+		frmHttpBypass.getContentPane().add(tabbedPane);
 		
-		JPanel panelExploit = new JPanel();
-		panelExploit.setBorder(new CompoundBorder());
-		panelExploit.setToolTipText("");
-		panelExploit.setBackground(Color.WHITE);
-		tabbedPane.addTab("Security Feeds", null, panelExploit, null);
+		JPanel panelBruteForce = new JPanel();
+		panelBruteForce.setBorder(new CompoundBorder());
+		panelBruteForce.setToolTipText("");
+		panelBruteForce.setBackground(Color.WHITE);
+		tabbedPane.addTab("Brute Force", null, panelBruteForce, null);
 		tabbedPane.setBackgroundAt(0, Color.WHITE);
-		panelExploit.setLayout(null);
+		panelBruteForce.setLayout(null);
 		
 		JScrollPane scrollPaneAreaTextForDescription = new JScrollPane();
-		scrollPaneAreaTextForDescription.setBounds(66, 479, 768, 107);
+		scrollPaneAreaTextForDescription.setBounds(66, 319, 768, 203);
 		scrollPaneAreaTextForDescription.setBorder(BorderFactory.createLineBorder(Color.decode("#c2c2c2")));
-		panelExploit.add(scrollPaneAreaTextForDescription);
+		panelBruteForce.add(scrollPaneAreaTextForDescription);
 		
-		textAreaDescription = new JTextArea();
-		textAreaDescription.setForeground(new Color(0, 255, 0));
-		textAreaDescription.setBackground(Color.BLACK);
-		scrollPaneAreaTextForDescription.setViewportView(textAreaDescription);
-		initialiseTextAreas(textAreaDescription);
+		
+		txtPaneLog = new JTextPane();
+		txtPaneLog.setEditable(false);
+		txtPaneLog.setFont(new Font("verdana", Font.PLAIN, 13));
+	
+		javax.swing.text.Style style = txtPaneLog.addStyle("I'm a Style", null);
+        StyleConstants.setForeground(style,Color.decode("#67c14b"));
+        StyledDocument doc = txtPaneLog.getStyledDocument();
+
+        try { doc.insertString(doc.getLength(), "Welcome to http authentication basic brute force !  \n",style); }
+        catch (BadLocationException e){}
+
+        //StyleConstants.setForeground(style, Color.blue); change color 
+
+//        try { doc.insertString(doc.getLength(), "BLEH",style); }
+//        catch (BadLocationException e){}
+
+		scrollPaneAreaTextForDescription.setViewportView(txtPaneLog);
+		
 
 		
-		JLabel lblTabTitle = new JLabel("HTTP BRUTE");
-		lblTabTitle.setFont(new Font("Arial", Font.BOLD, 19));
-		lblTabTitle.setBounds(378, 47, 144, 28);
+		JLabel lblTabTitle = new JLabel("HTTP authentication basic brute forcing");
+		lblTabTitle.setFont(new Font("Verdana", Font.PLAIN, 19));
+		lblTabTitle.setBounds(219, 48, 462, 28);
 		lblTabTitle.setForeground(new Color(51, 102, 153));
-		panelExploit.add(lblTabTitle);
+		panelBruteForce.add(lblTabTitle);
 		
 		txtSearching = new JTextField(" ");
-		txtSearching.setBounds(66, 132, 768, 49);
+		txtSearching.setBounds(66, 132, 768, 22);
 		txtSearching.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		txtSearching.setBorder(BorderFactory.createLineBorder(Color.decode("#c2c2c2")));
-		panelExploit.add(txtSearching);
+		panelBruteForce.add(txtSearching);
 		txtSearching.setColumns(10);
 		
-		textAreaDateUpdate = new JTextArea();
-		textAreaDateUpdate.setBounds(702, 130, 143, 15);
-		initialiseTextAreas(textAreaDateUpdate);
-		panelExploit.add(textAreaDateUpdate);
-		
 		JLabel lblLink = new JLabel("Link :");
-		lblLink.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblLink.setFont(new Font("Verdana", Font.PLAIN, 12));
 		lblLink.setBounds(66, 116, 46, 14);
-		panelExploit.add(lblLink);
+		panelBruteForce.add(lblLink);
 		
-		JLabel lblOptions = new JLabel("options :");
-		lblOptions.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblOptions.setBounds(66, 229, 46, 14);
-		panelExploit.add(lblOptions);
+		JLabel lblOptions = new JLabel("Wordllist Path :");
+		lblOptions.setFont(new Font("Verdana", Font.PLAIN, 12));
+		lblOptions.setBounds(66, 211, 112, 14);
+		panelBruteForce.add(lblOptions);
+		
+		txtWordlistPath = new JTextField(" ");
+		txtWordlistPath.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		txtWordlistPath.setColumns(10);
+		txtWordlistPath.setBorder(BorderFactory.createLineBorder(Color.decode("#c2c2c2")));
+		txtWordlistPath.setBounds(66, 228, 768, 22);
+		panelBruteForce.add(txtWordlistPath);
+		
+		textField = new JTextField(" ");
+		textField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		textField.setColumns(10);
+		textField.setBorder(BorderFactory.createLineBorder(Color.decode("#c2c2c2")));
+		textField.setBounds(164, 275, 128, 15);
+		panelBruteForce.add(textField);
+		
+		txtRequestMethod = new JTextField(" ");
+		txtRequestMethod.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		txtRequestMethod.setColumns(10);
+		txtRequestMethod.setBorder(BorderFactory.createLineBorder(Color.decode("#c2c2c2")));
+		txtRequestMethod.setBounds(455, 275, 54, 15);
+		txtRequestMethod.setText("GET");
+		panelBruteForce.add(txtRequestMethod);
+		
+		JLabel lblUsername = new JLabel("Username :");
+		lblUsername.setFont(new Font("Verdana", Font.PLAIN, 12));
+		lblUsername.setBounds(66, 276, 88, 14);
+		panelBruteForce.add(lblUsername);
+		
+		JLabel lblMethod = new JLabel("Method :");
+		lblMethod.setFont(new Font("Verdana", Font.PLAIN, 12));
+		lblMethod.setBounds(378, 275, 64, 14);
+		panelBruteForce.add(lblMethod);
+		
+		JLabel lblLog = new JLabel("LOG");
+		lblLog.setFont(new Font("Verdana", Font.PLAIN, 11));
+		lblLog.setForeground(new Color(0, 0, 255));
+		lblLog.setBounds(66, 305, 46, 14);
+		panelBruteForce.add(lblLog);
+		
+		JButton btnStart = new JButton("Start");
+		btnStart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				
+			}
+		});
+		btnStart.setForeground(Color.WHITE);
+		btnStart.setFont(new Font("Verdana", Font.PLAIN, 12));
+		btnStart.setBackground(new Color(80, 170, 218));
+		btnStart.setBounds(680, 272, 154, 23);
+		panelBruteForce.add(btnStart);
 		
 		JPanel panelAbout = new JPanel();
 		panelAbout.setToolTipText("");
@@ -244,7 +300,7 @@ public class GUI_Main {
 		
 		mntmNewMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//Control.openLinkInBrowser("https://github.com/ayadim/SecurityFeeds");
+				Control.openLinkInBrowser("https://github.com/ayadim/http-brute-java");
 			}
 		});
 		
@@ -269,11 +325,11 @@ public class GUI_Main {
 			}
 		});
 		
-		frmSecurityFeeds.setTitle("Security Feeds");
-		frmSecurityFeeds.setResizable(false);
+		frmHttpBypass.setTitle("Http auth Bypass");
+		frmHttpBypass.setResizable(false);
 //		frmSecurityFeeds.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("PATH/TO/YourImage.png")));
-		frmSecurityFeeds.setLocationRelativeTo(null);
-		frmSecurityFeeds.setVisible(true);
+		frmHttpBypass.setLocationRelativeTo(null);
+		frmHttpBypass.setVisible(true);
 		
 //		if(!c_main.getLastestVersion().equals(Control.version))
 //			JOptionPane.showMessageDialog(frmSecurityFeeds,c_main.getLastestVersion()+" version is available ! ","Information",JOptionPane.INFORMATION_MESSAGE);
@@ -293,9 +349,9 @@ public class GUI_Main {
 
 	
 	private void clearTextArea(){
-		textAreaDateUpdate.setText("");
-		textAreaDescription.setText("");
-
+		
+		txtRequestMethod.setText("GET");
+		
 	} 
 	
 
