@@ -47,6 +47,7 @@ import control.Control;
 import javax.swing.JTextPane;
 import javax.swing.JComboBox;
 import javax.swing.border.BevelBorder;
+import java.awt.Toolkit;
 
 
 
@@ -85,6 +86,7 @@ public class GUI_Main {
 		
 
 		frmHttpBypass = new JFrame();
+		frmHttpBypass.setIconImage(Toolkit.getDefaultToolkit().getImage(GUI_Main.class.getResource("/img/Security_Approved.png")));
 		//frmSecurityFeeds.setIconImage(Toolkit.getDefaultToolkit().getImage(GUI_Main.class.getResource("/img/Security_Approved.png")));
 		frmHttpBypass.getContentPane().setBackground(Color.WHITE);
 		frmHttpBypass.setBounds(100, 100, 911, 614);
@@ -537,7 +539,6 @@ public class GUI_Main {
 		});
 		
 		frmHttpBypass.setTitle("Http Authentication Bypass");
-		frmHttpBypass.setResizable(false);
 //		frmSecurityFeeds.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("PATH/TO/YourImage.png")));
 		frmHttpBypass.setLocationRelativeTo(null);
 		frmHttpBypass.setVisible(true);
